@@ -1,5 +1,7 @@
 import React, { useEffect, ReactElement } from 'react';
 import { Bars } from 'react-loading-icons';
+
+// import { css, jsx } from '@emotion/react';
 import { LoadingProps } from './Loading.types';
 
 const loadingStartNode = document.getElementById('loading-start') as HTMLDivElement;
