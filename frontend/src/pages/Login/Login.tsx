@@ -16,14 +16,14 @@ function LogIn() {
     e.preventDefault();
     setLogInError(false);
     try {
-      await axios.post(
+      const { data } = await axios.post(
         '/api/users/login',
         { email, password },
         {
           withCredentials: true,
         },
       );
-      mutate();
+      mutate(data, false);
     } catch (e: any) {
       setLogInError(error.response?.data?.statusCode === 401);
     }
@@ -35,7 +35,7 @@ function LogIn() {
 
   return (
     <div id="container">
-      <Form.Header>Sleact</Form.Header>
+      <Form.Header>Slack</Form.Header>
       <Form onSubmit={onSubmit}>
         <Form.Label id="email-label">
           <span>이메일 주소</span>
