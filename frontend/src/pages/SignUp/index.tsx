@@ -40,10 +40,6 @@ export default function SignUp() {
     }
   };
 
-  if (data === undefined && error === undefined) {
-    return <div>로딩 중...</div>;
-  }
-
   if (data) {
     return <Navigate replace to="/workspace/channel" />;
   }
