@@ -2,8 +2,8 @@ import { Loading } from 'components';
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
-const Login = lazy(() => import('./pages/Login'));
-const SignUp = lazy(() => import('./pages/SignUp'));
+const Login = lazy(() => import('./pages/Login/Login'));
+const SignUp = lazy(() => import('./pages/SignUp/SignUp'));
 
 export default function App() {
   return (
