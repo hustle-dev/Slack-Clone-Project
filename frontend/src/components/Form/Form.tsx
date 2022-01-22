@@ -2,7 +2,7 @@ import React from 'react';
 import { Form as StyledForm, Label, Input, LinkContainer, Error, Button, Header, Success } from './Form.styles';
 import { IFormButtonProps, IFormInputProps, IFormNormalProps, IFormProps } from './Form.types';
 
-export function Form(props: IFormProps) {
+export default function Form(props: IFormProps) {
   return <StyledForm {...props} />;
 }
 
