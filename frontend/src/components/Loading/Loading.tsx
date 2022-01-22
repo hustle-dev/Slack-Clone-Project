@@ -1,8 +1,6 @@
 import React, { useEffect, ReactElement } from 'react';
 import { Bars } from 'react-loading-icons';
 
-import { css } from '@emotion/react';
-
 import { LoadingProps } from './Loading.types';
 import { LoadingWrapper } from './Loading.styles';
 
