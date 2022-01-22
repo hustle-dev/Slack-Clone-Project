@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Form } from 'components/Form/Form';
+import { Form } from 'components';
 import useInput from 'hooks/useInput';
 import React, { useState, ChangeEvent, SyntheticEvent } from 'react';
 import { Link, Navigate } from 'react-router-dom';

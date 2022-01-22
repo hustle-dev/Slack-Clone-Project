@@ -4,7 +4,7 @@ import { Link, Navigate } from 'react-router-dom';
 import useSWR from 'swr';
 import fetcher from 'utils/fetcher';
 import useInput from 'hooks/useInput';
-import { Form } from 'components/Form/Form';
+import { Form } from 'components';
 
 function LogIn() {
   const { data, error, mutate } = useSWR('/api/users', fetcher);
