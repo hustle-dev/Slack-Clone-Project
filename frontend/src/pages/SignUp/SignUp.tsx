@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Form } from 'components';
+import { Form, Loading } from 'components';
 import useInput from 'hooks/useInput';
 import React, { useState, ChangeEvent, SyntheticEvent } from 'react';
 import { Link, Navigate } from 'react-router-dom';
@@ -40,15 +40,13 @@ export default function SignUp() {
     }
   };
 
-  if (data === undefined && error === undefined) {
-    return <div>로딩 중...</div>;
-  }
-
   if (data) {
-    return <Navigate replace to="/workspace/channel" />;
+    return <Navigate replace to="/workspace/sleact/channel/일반" />;
   }
 
-  return (
+  return data === undefined && error === undefined ? (
+    <Loading />
+  ) : (
     <div id="container">
       <Form.Header>Slack</Form.Header>
       <Form onSubmit={onSubmit}>

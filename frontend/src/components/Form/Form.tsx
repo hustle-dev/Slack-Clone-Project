@@ -15,7 +15,7 @@ Form.Label = function FormLabel(props: IFormNormalProps) {
 };
 
 Form.Input = function FormInput(props: IFormInputProps) {
-  return <Input />;
+  return <Input {...props} />;
 };
 
 Form.Button = function FormButton(props: IFormButtonProps) {

@@ -4,7 +4,7 @@ import { Link, Navigate } from 'react-router-dom';
 import useSWR from 'swr';
 import fetcher from 'utils/fetcher';
 import useInput from 'hooks/useInput';
-import { Form } from 'components';
+import { Form, Loading } from 'components';
 
 function LogIn() {
   const { data, error, mutate } = useSWR('/api/users', fetcher);
@@ -30,10 +30,12 @@ function LogIn() {
   };
 
   if (data) {
-    return <Navigate replace to="/workspace/channel" />;
+    return <Navigate replace to="/workspace/sleact/channel/일반" />;
   }
 
-  return (
+  return data === undefined && error === undefined ? (
+    <Loading />
+  ) : (
     <div id="container">
       <Form.Header>Slack</Form.Header>
       <Form onSubmit={onSubmit}>
