@@ -12,13 +12,13 @@ export default function App() {
   return (
     <Suspense fallback={<Loading />}>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/workspace/:workspace" element={<Workspace />}>
           <Route path="/workspace/:workspace/channel/:channel" element={<Channel />} />
           <Route path="/workspace/:workspace/dm/:id" element={<DirectMessage />} />
         </Route>
+        <Route path="/" element={<Navigate to="/login" />} />
       </Routes>
     </Suspense>
   );
