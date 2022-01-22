@@ -1,8 +1,8 @@
 import React, { useEffect, ReactElement } from 'react';
 import { Bars } from 'react-loading-icons';
 
-// import { css, jsx } from '@emotion/react';
 import { LoadingProps } from './Loading.types';
+import { LoadingWrapper } from './Loading.styles';
 
 const loadingStartNode = document.getElementById('loading-start') as HTMLDivElement;
 const loadingEndNode = document.getElementById('loading-end') as HTMLDivElement;
@@ -24,16 +24,8 @@ export default function Loading({ message }: LoadingProps): ReactElement {
   }, [message]);
 
   return (
-    <Bars
-      height="5rem"
-      fill="#00000"
-      fillOpacity={0.7}
-      //   css={`
-      //     position: fixed;
-      //     top: 50%;
-      //     left: 50%;
-      //     transform: translate(-50%, -50%);
-      //   `}
-    />
+    <LoadingWrapper>
+      <Bars height="5rem" fill="#000000" fillOpacity={0.7} />
+    </LoadingWrapper>
   );
 }
