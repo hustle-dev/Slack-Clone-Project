@@ -4,10 +4,20 @@ import { Navigate, Outlet, Link, useParams } from 'react-router-dom';
 import useSWR from 'swr';
 import fetcher from 'utils/fetcher';
 import gravatar from 'gravatar';
-import { CreateChannelModal, Form, InviteChannelModal, InviteWorkspaceModal, Loading, Menu, Modal } from 'components';
+import {
+  CreateChannelModal,
+  DMList,
+  Form,
+  InviteChannelModal,
+  InviteWorkspaceModal,
+  Loading,
+  Menu,
+  Modal,
+} from 'components';
 import { IChannel, IUser, IWorkspace } from 'typings/db';
 import useInput from 'hooks/useInput';
 import { toast } from 'react-toastify';
+import ChannelList from 'components/ChannelList/ChannelList';
 import {
   AddButton,
   Channels,
@@ -36,15 +46,16 @@ export default function Workspace() {
   const [newWorkspace, onChangeNewWorkspace, setNewWorkspace] = useInput('');
   const [newUrl, onChangeNewUrl, setNewUrl] = useInput('');
 
-  const {
-    data: userData,
-    error,
-    mutate: revalidateUser,
-  } = useSWR<IUser | false>('http://localhost:3095/api/users', fetcher);
+  const { data: userData, mutate: revalidateUser } = useSWR<IUser | false>('http://localhost:3095/api/users', fetcher);
 
   const { workspace } = useParams<{ workspace: string }>();
   const { data: channelData } = useSWR<IChannel[]>(
     userData ? `http://localhost:3095/api/workspaces/${workspace}/channels` : null,
+    fetcher,
+  );
+
+  const { data: memberData } = useSWR<IUser[]>(
+    userData ? `http://localhost:3095/api/workspaces/${workspace}/members` : null,
     fetcher,
   );
 
@@ -172,9 +183,8 @@ export default function Workspace() {
                 </button>
               </WorkspaceModal>
             </Menu>
-            {channelData?.map((v, i) => (
-              <div>{v.name}</div>
-            ))}
+            <ChannelList />
+            <DMList />
           </MenuScroll>
         </Channels>
         <Chats>

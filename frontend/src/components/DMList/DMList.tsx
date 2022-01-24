@@ -30,7 +30,7 @@ export default function DMList() {
   useEffect(() => {
     console.log(`DMList: workspace 변경`, workspace);
     setOnlineList([]);
-  });
+  }, [workspace]);
 
   return (
     <>

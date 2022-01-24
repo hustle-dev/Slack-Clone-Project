@@ -6,6 +6,7 @@ import useSWR from 'swr';
 import { IDM } from 'typings/db';
 import fetcher from 'utils/fetcher';
 import gravatar from 'gravatar';
+import { ChatBox, ChatList } from 'components';
 import { Container, Header } from './DirectMessage.styles';
 
 export default function DirectMessage() {
@@ -44,8 +45,8 @@ export default function DirectMessage() {
         <img src={gravatar.url(userData.email, { s: '24px', d: 'retro' })} alt={userData.nickname} />
         <span>{userData.nickname}</span>
       </Header>
-      {/* <ChatList />
-    <ChatBox chat={chat} onChangeChat={onChangeChat} onSubmitForm={onSubmitForm} /> */}
+      <ChatList />
+      <ChatBox chat={chat} onChangeChat={onChangeChat} onSubmitForm={onSubmitForm} />
     </Container>
   );
 }
