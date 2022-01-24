@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { CollapsedButton } from './CollapseButton.styles';
 import { CollapseButtonProps } from './CollapseButton.types';
 
