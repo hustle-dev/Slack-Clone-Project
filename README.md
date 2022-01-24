@@ -6,6 +6,12 @@
 
 ## 🛠 기술 스택
 
+  <img src="https://img.shields.io/badge/React-20232a?style=for-the-badge&logo=React&logoColor=#5bccea"/>
+  <img src="https://img.shields.io/badge/Typescript-3178C6?style=for-the-badge&logo=Typescript&logoColor=white"/>
+<img src="https://img.shields.io/badge/Socket.IO-18191A?style=for-the-badge&logo=Socket.io&logoColor=white"/>
+<img src="https://img.shields.io/badge/Emotion-D36AC2?style=for-the-badge&logoColor=f776AB"/>
+<img src="https://img.shields.io/badge/SWR-121212?style=for-the-badge&logo=Emotion&logoColor=white"/>
+
 ## 🗓 기간
 
 2022/01/19 ~ 2022/01/28 (약 1주일)
