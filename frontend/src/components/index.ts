@@ -7,3 +7,5 @@ export { default as InviteWorkspaceModal } from './InviteWorkspaceModal/InviteWo
 export { default as InviteChannelModal } from './InviteChannelModal/InviteChannelModal';
 export { default as CollapseButton } from './CollapseButton/CollapseButton';
 export { default as DMList } from './DMList/DMList';
+export { default as ChatList } from './ChatList/ChatList';
+export { default as ChatBox } from './ChatBox/ChatBox';
