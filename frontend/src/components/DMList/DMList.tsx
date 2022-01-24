@@ -1,10 +1,10 @@
+import { CollapseButton } from 'components';
 import React, { useEffect, useState } from 'react';
 import { NavLink, useParams } from 'react-router-dom';
 
 import useSWR from 'swr';
 import { IUser } from 'typings/db';
 import fetcher from 'utils/fetcher';
-import { CollapseButton } from './DMList.styles';
 
 export default function DMList() {
   const { workspace } = useParams<{ workspace?: string }>();
