@@ -136,8 +136,6 @@ export default function Workspace() {
     setShowInviteChannelModal(true);
   }, []);
 
-  // if (userData === undefined && useError === undefined) return <Loading />;
-
   if (!userData) {
     return <Navigate replace to="/login" />;
   }
@@ -165,18 +163,13 @@ export default function Workspace() {
       </Header>
       <WorkspaceWrapper>
         <Workspaces>
-          {userData.Workspaces ? (
-            userData?.Workspaces.map((ws: IWorkspace) => {
-              return (
-                <Link key={ws.id} to={`/workspace/${123}/channel/일반`}>
-                  <WorkspaceButton>{ws.name.slice(0, 1).toUpperCase()}</WorkspaceButton>
-                </Link>
-              );
-            })
-          ) : (
-            <Loading />
-          )}
-
+          {userData?.Workspaces.map((ws: IWorkspace) => {
+            return (
+              <Link key={ws.id} to={`/workspace/${123}/channel/일반`}>
+                <WorkspaceButton>{ws.name.slice(0, 1).toUpperCase()}</WorkspaceButton>
+              </Link>
+            );
+          })}
           <AddButton onClick={onClickCreateWorkspace}>+</AddButton>
         </Workspaces>
         <Channels>
