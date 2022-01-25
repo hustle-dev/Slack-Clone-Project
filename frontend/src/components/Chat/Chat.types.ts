@@ -1,5 +1,5 @@
-import { IDM } from 'typings/db';
+import { IChat, IDM } from 'typings/db';
 
 export interface ChatProps {
-  data: IDM;
+  data: IDM | IChat;
 }

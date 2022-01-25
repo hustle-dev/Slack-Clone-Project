@@ -10,7 +10,7 @@ import { ChatProps } from './Chat.types';
 // const BACK_URL = 'http://localhost:3095';
 function Chat({ data }: ChatProps) {
   const { workspace } = useParams<{ workspace: string; channel: string }>();
-  const user = data.Sender;
+  const user = 'Sender' in data ? data.Sender : data.User;
 
   const result = useMemo(
     () =>
