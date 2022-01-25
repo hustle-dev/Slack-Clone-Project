@@ -7,9 +7,7 @@ import useInput from 'hooks/useInput';
 import { Form, Loading } from 'components';
 
 function LogIn() {
-  const { data, error, mutate } = useSWR('http://localhost:3095/api/users', fetcher, {
-    dedupingInterval: 10000,
-  });
+  const { data, error, mutate } = useSWR('/api/users', fetcher);
 
   const [logInError, setLogInError] = useState(false);
   const [email, onChangeEmail] = useInput('');
@@ -18,15 +16,15 @@ function LogIn() {
     e.preventDefault();
     setLogInError(false);
     try {
-      const { data } = await axios.post(
-        'http://localhost:3095/api/users/login',
+      await axios.post(
+        '/api/users/login',
         { email, password },
         {
           withCredentials: true,
         },
       );
-      mutate(data, false);
-    } catch (e: any) {
+      mutate();
+    } catch (error: any) {
       setLogInError(error.response?.data?.statusCode === 401);
     }
   };

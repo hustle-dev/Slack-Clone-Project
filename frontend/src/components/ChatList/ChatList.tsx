@@ -6,10 +6,13 @@ import { ChatListProps } from './ChatList.types';
 
 export default function ChatList({ chatSections }: ChatListProps) {
   const scrollbarRef = useRef(null);
-  // const onScroll = useCallback(() => {}, []);
+  const onScroll = useCallback(() => {
+    console.log('hi');
+  }, [scrollbarRef]);
+
   return (
     <ChatZone>
-      <Scrollbars autoHide ref={scrollbarRef}>
+      <Scrollbars autoHide ref={scrollbarRef} onScrollFrame={onScroll}>
         {Object.entries(chatSections).map(([date, chats]) => {
           return (
             <Section className={`section-${date}`} key={date}>

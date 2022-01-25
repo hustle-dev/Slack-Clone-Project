@@ -51,15 +51,12 @@ export default function Workspace() {
     data: userData,
     error: useError,
     mutate: revalidateUser,
-  } = useSWR<IUser | false>('http://localhost:3095/api/users', fetcher, { dedupingInterval: 2000 });
+  } = useSWR<IUser | false>('/api/users', fetcher, { dedupingInterval: 2000 });
 
   const { workspace } = useParams<{ workspace: string }>();
-  const { data: channelData } = useSWR<IChannel[]>(
-    userData ? `http://localhost:3095/api/workspaces/${workspace}/channels` : null,
-    fetcher,
-  );
+  const { data: channelData } = useSWR<IChannel[]>(userData ? `/api/workspaces/${workspace}/channels` : null, fetcher);
   // const { data: memberData } = useSWR<IUser[]>(
-  //   userData ? `http://localhost:3095/api/workspaces/${workspace}/members` : null,
+  //   userData ? `/api/workspaces/${workspace}/members` : null,
   //   fetcher,
   // );
 
@@ -78,7 +75,7 @@ export default function Workspace() {
   }, [workspace, disconnect]);
 
   const onLogout = useCallback(() => {
-    axios.post('http://localhost:3095/api/users/logout', null, { withCredentials: true }).then(() => {
+    axios.post('/api/users/logout', null, { withCredentials: true }).then(() => {
       revalidateUser(false, false);
     });
   }, []);
@@ -99,7 +96,7 @@ export default function Workspace() {
 
       axios
         .post(
-          'http://localhost:3095/api/workspaces',
+          '/api/workspaces',
           {
             workspace: newWorkspace,
             url: newUrl,
@@ -139,8 +136,6 @@ export default function Workspace() {
     setShowInviteChannelModal(true);
   }, []);
 
-  // if (userData === undefined && useError === undefined) return <Loading />;
-
   if (!userData) {
     return <Navigate replace to="/login" />;
   }
@@ -168,18 +163,13 @@ export default function Workspace() {
       </Header>
       <WorkspaceWrapper>
         <Workspaces>
-          {userData.Workspaces ? (
-            userData?.Workspaces.map((ws: IWorkspace) => {
-              return (
-                <Link key={ws.id} to={`/workspace/${123}/channel/일반`}>
-                  <WorkspaceButton>{ws.name.slice(0, 1).toUpperCase()}</WorkspaceButton>
-                </Link>
-              );
-            })
-          ) : (
-            <Loading />
-          )}
-
+          {userData?.Workspaces.map((ws: IWorkspace) => {
+            return (
+              <Link key={ws.id} to={`/workspace/${123}/channel/일반`}>
+                <WorkspaceButton>{ws.name.slice(0, 1).toUpperCase()}</WorkspaceButton>
+              </Link>
+            );
+          })}
           <AddButton onClick={onClickCreateWorkspace}>+</AddButton>
         </Workspaces>
         <Channels>

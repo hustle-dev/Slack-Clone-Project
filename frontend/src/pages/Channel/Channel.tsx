@@ -5,11 +5,14 @@ import { Container, Header } from './Channel.styles';
 
 export default function Channel() {
   const [chat, onChangeChat, setChat] = useInput('');
-  const onSubmitForm = useCallback((e) => {
-    e.preventDefault();
-    console.log('submit');
-    setChat('');
-  }, []);
+  const onSubmitForm = useCallback(
+    (e) => {
+      e.preventDefault();
+      console.log('submit');
+      setChat('');
+    },
+    [chat],
+  );
 
   return (
     <Container>

@@ -12,30 +12,34 @@ import { Container, Header } from './DirectMessage.styles';
 
 export default function DirectMessage() {
   const { workspace, id } = useParams<{ workspace: string; id: string }>();
-  const { data: userData } = useSWR(`http://localhost:3095/api/workspaces/${workspace}/users/${id}`, fetcher);
-  const { data: myData } = useSWR(`http://localhost:3095/api/users`, fetcher);
+  const { data: userData } = useSWR(`/api/workspaces/${workspace}/users/${id}`, fetcher);
+  const { data: myData } = useSWR(`/api/users`, fetcher);
   const [chat, onChangeChat, setChat] = useInput('');
-  const { data: chatData, mutate } = useSWR<IDM[]>(
-    `http://localhost:3095/api/workspaces/${workspace}/dms/${id}/chats?perPage=20&page=1`,
+  const { data: chatData, mutate: mutateChat } = useSWR<IDM[]>(
+    `/api/workspaces/${workspace}/dms/${id}/chats?perPage=20&page=1`,
     fetcher,
   );
 
   const onSubmitForm = useCallback(
     (e) => {
       e.preventDefault();
-      if (chat?.trim()) {
+      if (chat?.trim() && chatData) {
         axios
-          .post(`http://localhost:3095/api/workspaces/${workspace}/dms/${id}/chats`, {
-            content: chat,
-          })
+          .post(
+            `/api/workspaces/${workspace}/dms/${id}/chats`,
+            {
+              content: chat,
+            },
+            { withCredentials: true },
+          )
           .then(() => {
-            mutate();
             setChat('');
+            mutateChat();
           })
           .catch(console.error);
       }
     },
-    [chat],
+    [chat, chatData, myData, userData, workspace, id],
   );
 
   if (!userData || !myData) return null;
