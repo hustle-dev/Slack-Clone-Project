@@ -1,5 +1,6 @@
 import { CollapseButton } from 'components';
-import React, { useEffect, useState } from 'react';
+import useSocket from 'hooks/useSocket';
+import React, { useCallback, useEffect, useState } from 'react';
 import { NavLink, useParams } from 'react-router-dom';
 
 import useSWR from 'swr';
@@ -8,11 +9,7 @@ import fetcher from 'utils/fetcher';
 
 export default function DMList() {
   const { workspace } = useParams<{ workspace?: string }>();
-  const {
-    data: userData,
-    error,
-    mutate,
-  } = useSWR<IUser>('http://localhost:3095/api/users', fetcher, {
+  const { data: userData } = useSWR<IUser>('http://localhost:3095/api/users', fetcher, {
     dedupingInterval: 2000, // 2초
   });
   const { data: memberData } = useSWR<IUser[]>(
@@ -22,15 +19,26 @@ export default function DMList() {
 
   const [channelCollapse, setChannelCollapse] = useState(false);
   const [onlineList, setOnlineList] = useState<number[]>([]);
+  const [socket] = useSocket(workspace);
 
-  const toggleChannelCollapse = () => {
+  const toggleChannelCollapse = useCallback(() => {
     setChannelCollapse((prev) => !prev);
-  };
+  }, []);
 
   useEffect(() => {
     console.log(`DMList: workspace 변경`, workspace);
     setOnlineList([]);
   }, [workspace]);
+
+  useEffect(() => {
+    socket?.on('onlineList', (data: number[]) => {
+      setOnlineList(data);
+    });
+
+    return () => {
+      socket?.off('onlineList');
+    };
+  }, [socket]);
 
   return (
     <>
