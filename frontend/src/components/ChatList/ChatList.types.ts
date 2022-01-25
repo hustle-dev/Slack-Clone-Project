@@ -1,5 +1,7 @@
-import { IDM } from 'typings/db';
+import { IChat, IDM } from 'typings/db';
 
 export interface ChatListProps {
-  chatSections: { [key: string]: IDM[] };
+  chatSections: { [key: string]: (IDM | IChat)[] };
+  setSize: (f: (size: number) => number) => Promise<(IDM | IChat)[][] | undefined>;
+  isReachingEnd: boolean;
 }
