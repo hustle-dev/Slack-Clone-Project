@@ -12,11 +12,11 @@ import { Container, Header } from './DirectMessage.styles';
 
 export default function DirectMessage() {
   const { workspace, id } = useParams<{ workspace: string; id: string }>();
-  const { data: userData } = useSWR(`http://localhost:3095/api/workspaces/${workspace}/users/${id}`, fetcher);
-  const { data: myData } = useSWR(`http://localhost:3095/api/users`, fetcher);
+  const { data: userData } = useSWR(`/api/workspaces/${workspace}/users/${id}`, fetcher);
+  const { data: myData } = useSWR(`/api/users`, fetcher);
   const [chat, onChangeChat, setChat] = useInput('');
   const { data: chatData, mutate: mutateChat } = useSWR<IDM[]>(
-    `http://localhost:3095/api/workspaces/${workspace}/dms/${id}/chats?perPage=20&page=1`,
+    `/api/workspaces/${workspace}/dms/${id}/chats?perPage=20&page=1`,
     fetcher,
   );
 
@@ -26,7 +26,7 @@ export default function DirectMessage() {
       if (chat?.trim() && chatData) {
         axios
           .post(
-            `http://localhost:3095/api/workspaces/${workspace}/dms/${id}/chats`,
+            `/api/workspaces/${workspace}/dms/${id}/chats`,
             {
               content: chat,
             },

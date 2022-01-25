@@ -11,14 +11,11 @@ import { ChatBoxProps } from './ChatBox.types';
 
 export default function ChatBox({ chat, onSubmitForm, onChangeChat, placeholder }: ChatBoxProps) {
   const { workspace } = useParams<{ workspace: string }>();
-  const { data: userData } = useSWR<IUser | false>('http://localhost:3095/api/users', fetcher, {
+  const { data: userData } = useSWR<IUser | false>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
 
-  const { data: memberData } = useSWR<IUser[]>(
-    userData ? `http://localhost:3095/api/workspaces/${workspace}/members` : null,
-    fetcher,
-  );
+  const { data: memberData } = useSWR<IUser[]>(userData ? `/api/workspaces/${workspace}/members` : null, fetcher);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   useEffect(() => {

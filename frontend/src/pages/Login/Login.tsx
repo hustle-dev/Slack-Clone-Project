@@ -7,7 +7,7 @@ import useInput from 'hooks/useInput';
 import { Form, Loading } from 'components';
 
 function LogIn() {
-  const { data, error, mutate } = useSWR('http://localhost:3095/api/users', fetcher, {
+  const { data, error, mutate } = useSWR('/api/users', fetcher, {
     dedupingInterval: 10000,
   });
 
