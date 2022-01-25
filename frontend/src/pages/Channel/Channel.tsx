@@ -1,20 +1,20 @@
 import { ChatBox, ChatList } from 'components';
 import useInput from 'hooks/useInput';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Container, Header } from './Channel.styles';
 
 export default function Channel() {
   const [chat, onChangeChat, setChat] = useInput('');
-  const onSubmitForm = (e: any) => {
+  const onSubmitForm = useCallback((e) => {
     e.preventDefault();
     console.log('submit');
     setChat('');
-  };
+  }, []);
 
   return (
     <Container>
       <Header>채널!</Header>
-      <ChatList />
+      {/* <ChatList /> */}
       <ChatBox chat={chat} onChangeChat={onChangeChat} onSubmitForm={onSubmitForm} />
     </Container>
   );

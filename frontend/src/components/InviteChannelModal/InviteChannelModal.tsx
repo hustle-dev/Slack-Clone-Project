@@ -14,7 +14,7 @@ export default function InviteChannelModal({ show, onCloseModal, setShowInviteCh
   const [newMember, onChangeNewMember, setNewMember] = useInput('');
   const { data: userData } = useSWR<IUser>('http://localhost:3095/api/users', fetcher);
   const { mutate: revalidateMembers } = useSWR<IUser[]>(
-    userData ? `http://localhost:3095/api/workspaces/${workspace}/channels/${channel}/members` : null,
+    userData && channel ? `http://localhost:3095/api/workspaces/${workspace}/channels/${channel}/members` : null,
     fetcher,
   );
 
