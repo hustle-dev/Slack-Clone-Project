@@ -8,8 +8,10 @@ module.exports = {
     'plugin:prettier/recommended',
     'plugin:@typescript-eslint/recommended',
     'prettier',
+    'react-app',
   ],
   rules: {
+    'consistent-return': 0,
     'linebreak-style': 0,
     'import/prefer-default-export': 0,
     'prettier/prettier': 0,
@@ -20,6 +22,7 @@ module.exports = {
     'no-shadow': 0,
     'react/prop-types': 0,
     'react/jsx-props-no-spreading': 0,
+    'react/no-unstable-nested-components': 0,
     'react/jsx-filename-extension': [2, { extensions: ['.js', '.jsx', '.ts', '.tsx'] }],
     'jsx-a11y/no-noninteractive-element-interactions': 0,
   },

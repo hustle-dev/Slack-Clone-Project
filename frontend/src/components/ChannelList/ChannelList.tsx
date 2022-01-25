@@ -1,17 +1,13 @@
 import { CollapseButton } from 'components';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { NavLink, useParams } from 'react-router-dom';
 import useSWR from 'swr';
 import { IChannel, IUser } from 'typings/db';
 import fetcher from 'utils/fetcher';
 
 export default function ChannelList() {
-  const { workspace, channel } = useParams<{ workspace?: string; channel?: string }>();
-  const {
-    data: userData,
-    error,
-    mutate,
-  } = useSWR<IUser>('http://localhost:3095/api/users', fetcher, {
+  const { workspace } = useParams<{ workspace?: string; channel?: string }>();
+  const { data: userData } = useSWR<IUser>('http://localhost:3095/api/users', fetcher, {
     dedupingInterval: 2000, // 2초
   });
   const { data: channelData } = useSWR<IChannel[]>(
@@ -20,9 +16,9 @@ export default function ChannelList() {
   );
   const [channelCollapse, setChannelCollapse] = useState(false);
 
-  const toggleChannelCollapse = () => {
+  const toggleChannelCollapse = useCallback(() => {
     setChannelCollapse((prev) => !prev);
-  };
+  }, []);
 
   return (
     <>
