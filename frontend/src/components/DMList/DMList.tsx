@@ -42,6 +42,7 @@ export default function DMList() {
             aria-hidden="true"
           />
         </CollapseButton>
+        <span>Direct Messages</span>
       </h2>
       <div>
         {!channelCollapse &&
