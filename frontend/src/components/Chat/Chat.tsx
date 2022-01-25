@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import gravatar from 'gravatar';
 import dayjs from 'dayjs';
@@ -53,4 +53,4 @@ function Chat({ data }: ChatProps) {
   );
 }
 
-export default Chat;
+export default memo(Chat);
