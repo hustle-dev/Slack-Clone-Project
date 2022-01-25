@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Navigate, Outlet, Link, useParams } from 'react-router-dom';
 import useSWR from 'swr';
 import fetcher from 'utils/fetcher';
@@ -18,6 +18,7 @@ import { IChannel, IUser, IWorkspace } from 'typings/db';
 import useInput from 'hooks/useInput';
 import { toast } from 'react-toastify';
 import ChannelList from 'components/ChannelList/ChannelList';
+import useSocket from 'hooks/useSocket';
 import {
   AddButton,
   Channels,
@@ -46,85 +47,99 @@ export default function Workspace() {
   const [newWorkspace, onChangeNewWorkspace, setNewWorkspace] = useInput('');
   const [newUrl, onChangeNewUrl, setNewUrl] = useInput('');
 
-  const { data: userData, mutate: revalidateUser } = useSWR<IUser | false>('http://localhost:3095/api/users', fetcher);
+  const {
+    data: userData,
+    error: useError,
+    mutate: revalidateUser,
+  } = useSWR<IUser | false>('http://localhost:3095/api/users', fetcher, { dedupingInterval: 2000 });
 
   const { workspace } = useParams<{ workspace: string }>();
   const { data: channelData } = useSWR<IChannel[]>(
     userData ? `http://localhost:3095/api/workspaces/${workspace}/channels` : null,
     fetcher,
   );
+  // const { data: memberData } = useSWR<IUser[]>(
+  //   userData ? `http://localhost:3095/api/workspaces/${workspace}/members` : null,
+  //   fetcher,
+  // );
 
-  const { data: memberData } = useSWR<IUser[]>(
-    userData ? `http://localhost:3095/api/workspaces/${workspace}/members` : null,
-    fetcher,
+  const [socket, disconnect] = useSocket(workspace);
+
+  useEffect(() => {
+    if (channelData && userData && socket) {
+      socket.emit('login', { id: userData.id, channels: channelData.map((channel) => channel.id) });
+    }
+  }, [socket, userData, channelData]);
+
+  useEffect(() => {
+    return () => {
+      disconnect();
+    };
+  }, [workspace, disconnect]);
+
+  const onLogout = useCallback(() => {
+    axios.post('http://localhost:3095/api/users/logout', null, { withCredentials: true }).then(() => {
+      revalidateUser(false, false);
+    });
+  }, []);
+
+  const onClickUserProfile = useCallback(() => {
+    setShowUserMenu((prev) => !prev);
+  }, []);
+
+  const onClickCreateWorkspace = useCallback(() => {
+    setShowCreateWorkspaceModal(true);
+  }, []);
+
+  const onCreateWorkspace = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (!newWorkspace || !newWorkspace.trim()) return;
+      if (!newUrl || !newUrl.trim()) return;
+
+      axios
+        .post(
+          'http://localhost:3095/api/workspaces',
+          {
+            workspace: newWorkspace,
+            url: newUrl,
+          },
+          { withCredentials: true },
+        )
+        .then(() => {
+          revalidateUser();
+          setShowCreateWorkspaceModal(false);
+          setNewWorkspace('');
+          setNewUrl('');
+        })
+        .catch((error) => {
+          console.dir(error);
+          toast.error(error.response?.data, { position: 'bottom-center' });
+        });
+    },
+    [newWorkspace, newUrl],
   );
 
-  const onLogout = async () => {
-    try {
-      await axios.post('http://localhost:3095/api/users/logout', null, {
-        withCredentials: true,
-      });
-      revalidateUser();
-    } catch (e: any) {
-      console.error(e);
-    }
-  };
-
-  const onClickUserProfile = (e: any) => {
-    e.stopPropagation();
-    setShowUserMenu((prev) => !prev);
-  };
-
-  const onClickCreateWorkspace = () => {
-    setShowCreateWorkspaceModal(true);
-  };
-
-  const onCreateWorkspace = (e: any) => {
-    e.preventDefault();
-    if (!newWorkspace || !newWorkspace.trim()) return;
-    if (!newUrl || !newUrl.trim()) return;
-
-    axios
-      .post(
-        'http://localhost:3095/api/workspaces',
-        {
-          workspace: newWorkspace,
-          url: newUrl,
-        },
-        {
-          withCredentials: true,
-        },
-      )
-      .then(() => {
-        revalidateUser();
-        setShowCreateWorkspaceModal(false);
-        setNewWorkspace('');
-        setNewUrl('');
-      })
-      .catch((error) => {
-        console.dir(error);
-        toast.error(error.response?.data, { position: 'bottom-center' });
-      });
-  };
-
-  const onCloseModal = () => {
+  const onCloseModal = useCallback(() => {
     setShowCreateWorkspaceModal(false);
     setShowCreateChannelModal(false);
     setShowInviteWorkspaceModal(false);
     setShowInviteChannelModal(false);
-  };
+  }, []);
 
-  const toggleWorkspaceModal = () => {
+  const toggleWorkspaceModal = useCallback(() => {
     setShowWorkspaceModal((prev) => !prev);
-  };
+  }, []);
 
-  const onClickAddChannel = () => {
+  const onClickAddChannel = useCallback(() => {
     setShowCreateChannelModal(true);
-  };
+  }, []);
 
-  const onClickInviteWorkspace = () => {
-    setShowInviteWorkspaceModal(true);
-  };
+  const onClickInviteWorkspace = useCallback(() => {
+    setShowInviteChannelModal(true);
+  }, []);
+
+  // if (userData === undefined && useError === undefined) return <Loading />;
 
   if (!userData) {
     return <Navigate replace to="/login" />;
@@ -164,6 +179,7 @@ export default function Workspace() {
           ) : (
             <Loading />
           )}
+
           <AddButton onClick={onClickCreateWorkspace}>+</AddButton>
         </Workspaces>
         <Channels>
