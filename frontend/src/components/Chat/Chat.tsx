@@ -7,40 +7,35 @@ import { ChatWrapper } from './Chat.styles';
 import { ChatProps } from './Chat.types';
 
 // develop일 때 아닐 때 구분 필요
-const BACK_URL = 'http://localhost:3095';
+// const BACK_URL = 'http://localhost:3095';
 function Chat({ data }: ChatProps) {
-  const user = data.Sender;
-
   const { workspace } = useParams<{ workspace: string; channel: string }>();
+  const user = data.Sender;
 
   const result = useMemo(
     () =>
-      data.content.startsWith('uploads\\') || data.content.startsWith('uploads/') ? (
-        <img src={`${BACK_URL}/${data.content}`} style={{ maxHeight: 200 }} alt="profile" />
-      ) : (
-        regexifyString({
-          input: data.content,
-          pattern: /@\[(.+?)]\((\d+?)\)|\n/g,
-          decorator(match, index) {
-            const arr: string[] | null = match.match(/@\[(.+?)]\((\d+?)\)/)!;
-            if (arr) {
-              return (
-                <Link key={match + index} to={`/workspace/${workspace}/dm/${arr[2]}`}>
-                  @{arr[1]}
-                </Link>
-              );
-            }
-            return <br key={index} />;
-          },
-        })
-      ),
+      regexifyString({
+        input: data.content,
+        pattern: /@\[(.+?)]\((\d+?)\)|\n/g,
+        decorator(match, index) {
+          const arr: string[] | null = match.match(/@\[(.+?)]\((\d+?)\)/)!;
+          if (arr) {
+            return (
+              <Link key={match + index} to={`/workspace/${workspace}/dm/${arr[2]}`}>
+                @{arr[1]}
+              </Link>
+            );
+          }
+          return <br key={index} />;
+        },
+      }),
     [workspace, data.content],
   );
 
   return (
     <ChatWrapper>
       <div className="chat-img">
-        <img src={gravatar.url(user.email, { s: '36px', d: 'retro' })} alt={user.email} />
+        <img src={gravatar.url(user.email, { s: '36px', d: 'retro' })} alt={user.nickname} />
       </div>
       <div className="chat-text">
         <div className="chat-user">

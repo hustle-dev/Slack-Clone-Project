@@ -19,7 +19,7 @@ function LogIn() {
     setLogInError(false);
     try {
       const { data } = await axios.post(
-        'http://localhost:3095/api/users/login',
+        '/api/users/login',
         { email, password },
         {
           withCredentials: true,
