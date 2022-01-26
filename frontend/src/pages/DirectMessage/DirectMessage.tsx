@@ -54,9 +54,15 @@ export default function DirectMessage() {
           scrollbarRef.current?.scrollToBottom();
         });
         axios
-          .post(`/api/workspaces/${workspace}/dms/${id}/chats`, {
-            content: chat,
-          })
+          .post(
+            `/api/workspaces/${workspace}/dms/${id}/chats`,
+            {
+              content: chat,
+            },
+            {
+              withCredentials: true,
+            },
+          )
           .then(() => {
             mutateChat();
             setChat('');
