@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import useInput from 'hooks/useInput';
 import { useParams } from 'react-router-dom';
@@ -12,7 +12,7 @@ import { ChatBox, ChatList } from 'components';
 import makeSection from 'utils/makeSection';
 import useSocket from 'hooks/useSocket';
 import Scrollbars from 'react-custom-scrollbars';
-import { Container, Header } from './DirectMessage.styles';
+import { Container, DragOver, Header } from './DirectMessage.styles';
 
 export default function DirectMessage() {
   const { workspace, id } = useParams<{ workspace: string; id: string }>();
@@ -32,6 +32,8 @@ export default function DirectMessage() {
   const isEmpty = chatData?.[0]?.length === 0;
   const isReachingENd = isEmpty || (chatData && chatData[chatData.length - 1]?.length < 20) || false;
   const scrollbarRef = useRef<Scrollbars>(null);
+  const [dragOver, setDragOver] = useState(false);
+  const dragTarget = useRef(null);
 
   const onSubmitForm = useCallback(
     (e) => {
@@ -110,18 +112,61 @@ export default function DirectMessage() {
     }
   }, [chatData]);
 
+  const onDrop = useCallback(
+    (e) => {
+      e.preventDefault();
+      const formData = new FormData();
+      if (e.dataTransfer.items) {
+        for (let i = 0; i < e.dataTransfer.items.length; i++) {
+          if (e.dataTransfer.items[i].kind === 'file') {
+            const file = e.dataTransfer.items[i].getAsFile();
+            formData.append('image', file);
+          }
+        }
+      } else {
+        for (let i = 0; i < e.dataTransfer.files.length; i++) {
+          formData.append('image', e.dataTransfer.files[i]);
+        }
+      }
+      axios.post(`/api/workspaces/${workspace}/dms/${id}/images`, formData).then(() => {
+        setDragOver(false);
+        localStorage.setItem(`${workspace}-${id}`, new Date().getTime().toString());
+        mutateChat();
+        scrollbarRef.current?.scrollToBottom();
+      });
+    },
+    [workspace, id, mutateChat],
+  );
+  const onDragEnter = useCallback((e) => {
+    e.preventDefault();
+    dragTarget.current = e.target;
+    setDragOver(true);
+  }, []);
+
+  const onDragOver = useCallback((e) => {
+    e.preventDefault();
+  }, []);
+
+  const onDragLeave = useCallback((e) => {
+    if (dragTarget.current === e.target) {
+      e.preventDefault();
+      setDragOver(false);
+    }
+  }, []);
+
   if (!userData || !myData) return null;
 
   const chatSections = makeSection(chatData ? chatData.flat().reverse() : []);
 
   return (
-    <Container>
+    <Container onDrop={onDrop} onDragEnter={onDragEnter} onDragOver={onDragOver} onDragLeave={onDragLeave}>
       <Header>
         <img src={gravatar.url(userData.email, { s: '24px', d: 'retro' })} alt={userData.nickname} />
         <span>{userData.nickname}</span>
       </Header>
       <ChatList chatSections={chatSections} ref={scrollbarRef} setSize={setSize} isReachingEnd={isReachingENd} />
       <ChatBox chat={chat} onChangeChat={onChangeChat} onSubmitForm={onSubmitForm} />
+      {dragOver && <DragOver>업로드!</DragOver>}
     </Container>
   );
 }

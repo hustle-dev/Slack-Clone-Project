@@ -20,6 +20,7 @@ module.exports = {
     'import/no-unresolved': 0,
     'import/no-extraneous-dependencies': 0, // 테스트 또는 개발환경을 구성하는 파일에서는 devDependency 사용을 허용
     'no-shadow': 0,
+    'no-plusplus': 0,
     'react/prop-types': 0,
     'react/jsx-props-no-spreading': 0,
     'react/no-unstable-nested-components': 0,
