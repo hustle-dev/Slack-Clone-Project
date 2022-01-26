@@ -10,11 +10,10 @@ import useSWRInfinite from 'swr/infinite';
 import { IChannel, IChat, IUser } from 'typings/db';
 import fetcher from 'utils/fetcher';
 import makeSection from 'utils/makeSection';
-import { Container, Header } from './Channel.styles';
+import { Container, DragOver, Header } from './Channel.styles';
 
 export default function Channel() {
   const { workspace, channel } = useParams<{ workspace: string; channel: string }>();
-  const [chat, onChangeChat, setChat] = useInput('');
 
   const { data: myData } = useSWR('/api/users', fetcher);
   const { data: channelData } = useSWR<IChannel>(`/api/workspaces/${workspace}/channels/${channel}`, fetcher);
@@ -31,11 +30,14 @@ export default function Channel() {
     fetcher,
   );
 
+  const [showInviteChannelModal, setShowInviteChannelModal] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
+  const [chat, onChangeChat, setChat] = useInput('');
   const [socket] = useSocket(workspace);
+  const scrollbarRef = useRef<Scrollbars>(null);
+  const dragTarget = useRef(null);
   const isEmpty = chatData?.[0]?.length === 0;
   const isReachingEnd = isEmpty || (chatData && chatData[chatData.length - 1]?.length < 20) || false;
-  const scrollbarRef = useRef<Scrollbars>(null);
-  const [showInviteChannelModal, setShowInviteChannelModal] = useState(false);
 
   const onSubmitForm = useCallback(
     (e) => {
@@ -117,12 +119,56 @@ export default function Channel() {
     setShowInviteChannelModal(false);
   }, []);
 
+  const onDrop = useCallback(
+    (e) => {
+      e.preventDefault();
+      const formData = new FormData();
+      if (e.dataTransfer.items) {
+        for (let i = 0; i < e.dataTransfer.items.length; i++) {
+          if (e.dataTransfer.items[i].kind === 'file') {
+            const file = e.dataTransfer.items[i].getAsFile();
+            formData.append('image', file);
+          }
+        }
+      } else {
+        for (let i = 0; i < e.dataTransfer.files.length; i++) {
+          formData.append('image', e.dataTransfer.files[i]);
+        }
+      }
+      axios.post(`/api/workspaces/${workspace}/channels/${channel}/images`, formData).then(() => {
+        setDragOver(false);
+        localStorage.setItem(`${workspace}-${channel}`, new Date().getTime().toString());
+        mutateChat();
+        scrollbarRef.current?.scrollToBottom();
+      });
+    },
+    [workspace, channel, mutateChat],
+  );
+  const onDragEnter = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragTarget.current = e.target;
+    setDragOver(true);
+  }, []);
+
+  const onDragOver = useCallback((e) => {
+    e.preventDefault();
+  }, []);
+
+  const onDragLeave = useCallback((e) => {
+    if (dragTarget.current === e.target) {
+      e.preventDefault();
+      e.stopPropagation();
+      setDragOver(false);
+    }
+  }, []);
+
   const chatSections = makeSection(chatData ? chatData.flat().reverse() : []);
 
   if (myData === undefined) return null;
 
   return (
-    <Container>
+    <Container onDrop={onDrop} onDragEnter={onDragEnter} onDragOver={onDragOver} onDragLeave={onDragLeave}>
       <Header>
         <span>#{channel}</span>
         <div className="header-right">
@@ -145,6 +191,7 @@ export default function Channel() {
         onCloseModal={onCloseModal}
         setShowInviteChannelModal={setShowInviteChannelModal}
       />
+      {dragOver && <DragOver>업로드!</DragOver>}
     </Container>
   );
 }
