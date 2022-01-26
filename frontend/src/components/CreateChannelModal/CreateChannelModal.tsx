@@ -24,8 +24,6 @@ export default function CreateChannelModal({ show, onCloseModal, setShowCreateCh
     (e) => {
       e.preventDefault();
 
-      console.log(newChannel);
-
       if (!newChannel || !newChannel.trim()) {
         return;
       }
