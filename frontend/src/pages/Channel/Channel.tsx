@@ -101,13 +101,13 @@ export default function Channel() {
     };
   }, [socket, onMessage]);
 
-  // useEffect(() => {
-  //   if (chatData?.length === 1) {
-  //     setTimeout(() => {
-  //       scrollbarRef.current?.scrollToBottom();
-  //     }, 500);
-  //   }
-  // }, [chatData]);
+  useEffect(() => {
+    if (chatData?.length === 1) {
+      setTimeout(() => {
+        scrollbarRef.current?.scrollToBottom();
+      }, 500);
+    }
+  }, [chatData]);
 
   const onClickInviteChannel = useCallback(() => {
     setShowInviteChannelModal(true);
@@ -118,6 +118,8 @@ export default function Channel() {
   }, []);
 
   const chatSections = makeSection(chatData ? chatData.flat().reverse() : []);
+
+  if (myData === undefined) return null;
 
   return (
     <Container>
