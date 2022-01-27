@@ -134,7 +134,7 @@ export default function DirectMessage() {
   // useEffect(() => {
   //   if (chatData?.length === 1) {
   //     setTimeout(() => {
-  //       scrollbarRef.current?.scrollToBottom();
+  //       scrollbarRef.current?.scrollToBottom();a
   //     }, 500);
   //   }
   // }, [chatData]);

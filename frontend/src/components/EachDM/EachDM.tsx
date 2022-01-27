@@ -18,7 +18,7 @@ export default function EachDM({ member, isOnline }: EachDMProps): ReactElement 
   );
 
   useEffect(() => {
-    if (location.pathname === `/workspace/${workspace}/dm/${member.id}}`) {
+    if (location.pathname === `/workspace/${workspace}/dm/${member.id}`) {
       mutate(0);
     }
   }, [mutate, location.pathname, workspace, member]);
