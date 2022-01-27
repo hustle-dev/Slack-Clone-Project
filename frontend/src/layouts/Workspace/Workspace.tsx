@@ -17,6 +17,7 @@ import {
 import { IChannel, IUser, IWorkspace } from 'typings/db';
 import useInput from 'hooks/useInput';
 import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import ChannelList from 'components/ChannelList/ChannelList';
 import useSocket from 'hooks/useSocket';
 import {
@@ -195,6 +196,7 @@ export default function Workspace() {
           </MenuScroll>
         </Channels>
         <Chats>
+          <ToastContainer />
           <Outlet />
         </Chats>
       </WorkspaceWrapper>
