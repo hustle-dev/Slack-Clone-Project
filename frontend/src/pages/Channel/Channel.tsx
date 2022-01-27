@@ -24,15 +24,6 @@ export default function Channel() {
   } = useSWRInfinite<IChat[]>(
     (index) => `/api/workspaces/${workspace}/channels/${channel}/chats?perPage=20&page=${index + 1}`,
     fetcher,
-    {
-      onSuccess(data) {
-        if (data?.length === 1) {
-          setTimeout(() => {
-            scrollbarRef.current?.scrollToBottom();
-          }, 100);
-        }
-      },
-    },
   );
   const { data: channelMembersData } = useSWR<IUser[]>(
     myData ? `/api/workspaces/${workspace}/channels/${channel}/members` : null,
@@ -44,6 +35,7 @@ export default function Channel() {
   const [chat, onChangeChat, setChat] = useInput('');
   const [socket] = useSocket(workspace);
   const scrollbarRef = useRef<Scrollbars>(null);
+  const isEndScrollRef = useRef(false);
   const dragTarget = useRef(null);
 
   const isEmpty = chatData?.[0]?.length === 0;
@@ -87,6 +79,7 @@ export default function Channel() {
           .post(`/api/workspaces/${workspace}/channels/${channel}/chats`, {
             content: savedChat,
           })
+
           .catch(console.error);
       }
     },
@@ -99,26 +92,30 @@ export default function Channel() {
         data.Channel.name === channel &&
         (data.content.startsWith('uploads\\') || data.content.startsWith('uploads/') || data.UserId !== myData?.id)
       ) {
+        if (
+          scrollbarRef.current &&
+          scrollbarRef.current.getScrollHeight() ===
+            scrollbarRef.current.getClientHeight() + scrollbarRef.current.getScrollTop()
+        ) {
+          isEndScrollRef.current = true;
+        } else {
+          isEndScrollRef.current = false;
+        }
         mutateChat((chatData) => {
           chatData?.[0].unshift(data);
           return chatData;
         }, false).then(() => {
-          if (scrollbarRef.current) {
-            if (
-              scrollbarRef.current.getScrollHeight() <
-              scrollbarRef.current.getClientHeight() + scrollbarRef.current.getScrollTop() + 150
-            ) {
-              setTimeout(() => {
+          if (isEndScrollRef.current) {
+            setTimeout(() => {
+              scrollbarRef.current?.scrollToBottom();
+            }, 50);
+          } else {
+            toast.success('새 메시지가 도착했습니다.', {
+              onClick() {
                 scrollbarRef.current?.scrollToBottom();
-              }, 50);
-            } else {
-              toast.success('새 메시지가 도착했습니다.', {
-                onClick() {
-                  scrollbarRef.current?.scrollToBottom();
-                },
-                closeOnClick: true,
-              });
-            }
+              },
+              closeOnClick: true,
+            });
           }
         });
       }
@@ -136,6 +133,12 @@ export default function Channel() {
   useEffect(() => {
     localStorage.setItem(`${workspace}-${channel}`, new Date().getTime().toString());
   }, [workspace, channel]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      scrollbarRef.current?.scrollToBottom();
+    }, 300);
+  }, [chatData]);
 
   const onDrop = useCallback(
     (e) => {
