@@ -35,6 +35,7 @@ export default function InviteWorkspaceModal({
           revalidateMember();
           setShowInviteWorkspaceModal(false);
           setNewMember('');
+          onCloseModal();
         })
         .catch((error) => {
           toast.error(error.response?.data, { position: 'bottom-center' });
