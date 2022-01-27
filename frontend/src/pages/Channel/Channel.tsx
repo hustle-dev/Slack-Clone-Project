@@ -87,9 +87,6 @@ export default function Channel() {
           .post(`/api/workspaces/${workspace}/channels/${channel}/chats`, {
             content: savedChat,
           })
-          // .then(() => {
-          //   mutateChat();
-          // })
           .catch(console.error);
       }
     },
@@ -139,14 +136,6 @@ export default function Channel() {
   useEffect(() => {
     localStorage.setItem(`${workspace}-${channel}`, new Date().getTime().toString());
   }, [workspace, channel]);
-
-  // useEffect(() => {
-  //   if (chatData?.length === 1) {
-  //     setTimeout(() => {
-  //       scrollbarRef.current?.scrollToBottom();
-  //     }, 500);
-  //   }
-  // }, [chatData]);
 
   const onDrop = useCallback(
     (e) => {

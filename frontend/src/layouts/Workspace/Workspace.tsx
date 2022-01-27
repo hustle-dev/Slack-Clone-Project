@@ -35,6 +35,7 @@ import {
   Workspaces,
   WorkspaceWrapper,
 } from './Workspace.styles';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Workspace() {
   // const { data: userData, mutate: revalidateUser } = useSWR<IUser | false>('/api/users', fetcher, {
@@ -195,6 +196,7 @@ export default function Workspace() {
           </MenuScroll>
         </Channels>
         <Chats>
+          <ToastContainer />
           <Outlet />
         </Chats>
       </WorkspaceWrapper>

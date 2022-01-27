@@ -96,7 +96,7 @@ export default function DirectMessage() {
         mutateChat((chatData) => {
           chatData?.[0].unshift(data);
           return chatData;
-        }).then(() => {
+        }, false).then(() => {
           if (scrollbarRef.current) {
             if (
               scrollbarRef.current.getScrollHeight() <
@@ -117,7 +117,7 @@ export default function DirectMessage() {
         });
       }
     },
-    [id, mutateChat, myData],
+    [id, myData, mutateChat],
   );
 
   useEffect(() => {
@@ -130,14 +130,6 @@ export default function DirectMessage() {
   useEffect(() => {
     localStorage.setItem(`${workspace}-${id}`, new Date().getTime().toString());
   }, [workspace, id]);
-
-  // useEffect(() => {
-  //   if (chatData?.length === 1) {
-  //     setTimeout(() => {
-  //       scrollbarRef.current?.scrollToBottom();a
-  //     }, 500);
-  //   }
-  // }, [chatData]);
 
   const onDrop = useCallback(
     (e) => {
