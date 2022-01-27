@@ -23,6 +23,3 @@ https://github.com/URSound/Slack-Clone-Project/wiki
 | <img src="https://avatars.githubusercontent.com/hustle-dev" width="70%"> | <img src="https://avatars.githubusercontent.com/coolchaeyoung" width="70%"> |
 |               [hustle-dev](https://github.com/hustle-dev)                |              [coolchaeyoung](https://github.com/coolchaeyoung)              |
 
-## 참고 강의
-
-- https://www.inflearn.com/course/%ED%81%B4%EB%A1%A0%EC%BD%94%EB%94%A9-%EC%8B%A4%EC%8B%9C%EA%B0%84%EC%B1%84%ED%8C%85
