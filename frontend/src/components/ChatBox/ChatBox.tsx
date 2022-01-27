@@ -35,24 +35,26 @@ export default function ChatBox({ chat, onSubmitForm, onChangeChat, placeholder,
     [onSubmitForm],
   );
 
-  const renderSuggestion: (
-    suggestion: SuggestionDataItem,
-    search: string,
-    highlightedDisplay: ReactNode,
-    index: number,
-    focus: boolean,
-  ) => ReactNode = useCallback(
-    (member, search, highlightedDisplay, index, focus) => {
-      if (!data) return null;
-
+  const renderSuggestion = useCallback(
+    (
+      suggestion: SuggestionDataItem,
+      search: string,
+      highlightedDisplay: React.ReactNode,
+      index: number,
+      focus: boolean,
+    ): React.ReactNode => {
+      if (!memberData) return;
       return (
         <EachMention focus={focus}>
-          <img src={gravatar.url(data[index].email, { s: '20px', d: 'retro' })} alt={data[index].nickname} />
+          <img
+            src={gravatar.url(memberData[index].email, { s: '20px', d: 'retro' })}
+            alt={memberData[index].nickname}
+          />
           <span>{highlightedDisplay}</span>
         </EachMention>
       );
     },
-    [data],
+    [memberData],
   );
 
   return (
