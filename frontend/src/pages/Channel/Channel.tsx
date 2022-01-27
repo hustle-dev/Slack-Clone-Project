@@ -24,15 +24,6 @@ export default function Channel() {
   } = useSWRInfinite<IChat[]>(
     (index) => `/api/workspaces/${workspace}/channels/${channel}/chats?perPage=20&page=${index + 1}`,
     fetcher,
-    // {
-    //   onSuccess(data) {
-    //     if (data?.length === 1) {
-    //       setTimeout(() => {
-    //         scrollbarRef.current?.scrollToBottom();
-    //       }, 100);
-    //     }
-    //   },
-    // },
   );
   const { data: channelMembersData } = useSWR<IUser[]>(
     myData ? `/api/workspaces/${workspace}/channels/${channel}/members` : null,
@@ -88,9 +79,7 @@ export default function Channel() {
           .post(`/api/workspaces/${workspace}/channels/${channel}/chats`, {
             content: savedChat,
           })
-          // .then(() => {
-          //   mutateChat();
-          // })
+
           .catch(console.error);
       }
     },
@@ -105,7 +94,7 @@ export default function Channel() {
       ) {
         if (
           scrollbarRef.current &&
-          scrollbarRef.current.getScrollHeight() ===
+          scrollbarRef.current.getScrollHeight() <=
             scrollbarRef.current.getClientHeight() + scrollbarRef.current.getScrollTop()
         ) {
           isEndScrollRef.current = true;
@@ -115,7 +104,7 @@ export default function Channel() {
         mutateChat((chatData) => {
           chatData?.[0].unshift(data);
           return chatData;
-        }, false).then(() => {
+        }).then(() => {
           if (isEndScrollRef.current) {
             setTimeout(() => {
               scrollbarRef.current?.scrollToBottom();
@@ -145,13 +134,11 @@ export default function Channel() {
     localStorage.setItem(`${workspace}-${channel}`, new Date().getTime().toString());
   }, [workspace, channel]);
 
-  // useEffect(() => {
-  //   if (chatData?.length === 1) {
-  //     setTimeout(() => {
-  //       scrollbarRef.current?.scrollToBottom();
-  //     }, 500);
-  //   }
-  // }, [chatData]);
+  useEffect(() => {
+    setTimeout(() => {
+      scrollbarRef.current?.scrollToBottom();
+    }, 300);
+  }, [channel]);
 
   const onDrop = useCallback(
     (e) => {

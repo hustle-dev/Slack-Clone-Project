@@ -96,7 +96,7 @@ export default function DirectMessage() {
       if (data.SenderId === Number(id) && myData.id !== Number(id)) {
         if (
           scrollbarRef.current &&
-          scrollbarRef.current.getScrollHeight() ===
+          scrollbarRef.current.getScrollHeight() <=
             scrollbarRef.current.getClientHeight() + scrollbarRef.current.getScrollTop()
         ) {
           isEndScrollRef.current = true;
@@ -107,23 +107,6 @@ export default function DirectMessage() {
           chatData?.[0].unshift(data);
           return chatData;
         }).then(() => {
-          // if (scrollbarRef.current) {
-          //   if (
-          //     scrollbarRef.current.getScrollHeight() <
-          //     scrollbarRef.current.getClientHeight() + scrollbarRef.current.getScrollTop() + 150
-          //   ) {
-          //     setTimeout(() => {
-          //       scrollbarRef.current?.scrollToBottom();
-          //     }, 50);
-          //   } else {
-          // toast.success('새 메시지가 도착했습니다.', {
-          //   onClick() {
-          //     scrollbarRef.current?.scrollToBottom();
-          //   },
-          //   closeOnClick: true,
-          // });
-          //   }
-          // }
           if (isEndScrollRef.current) {
             setTimeout(() => {
               scrollbarRef.current?.scrollToBottom();
@@ -157,7 +140,7 @@ export default function DirectMessage() {
     setTimeout(() => {
       scrollbarRef.current?.scrollToBottom();
     }, 300);
-  }, []);
+  }, [id]);
 
   const onDrop = useCallback(
     (e) => {
