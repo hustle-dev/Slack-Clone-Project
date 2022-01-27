@@ -94,7 +94,7 @@ export default function Channel() {
       ) {
         if (
           scrollbarRef.current &&
-          scrollbarRef.current.getScrollHeight() ===
+          scrollbarRef.current.getScrollHeight() <=
             scrollbarRef.current.getClientHeight() + scrollbarRef.current.getScrollTop()
         ) {
           isEndScrollRef.current = true;
@@ -104,7 +104,7 @@ export default function Channel() {
         mutateChat((chatData) => {
           chatData?.[0].unshift(data);
           return chatData;
-        }, false).then(() => {
+        }).then(() => {
           if (isEndScrollRef.current) {
             setTimeout(() => {
               scrollbarRef.current?.scrollToBottom();
@@ -138,7 +138,7 @@ export default function Channel() {
     setTimeout(() => {
       scrollbarRef.current?.scrollToBottom();
     }, 300);
-  }, [chatData]);
+  }, []);
 
   const onDrop = useCallback(
     (e) => {
