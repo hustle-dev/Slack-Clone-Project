@@ -34,12 +34,13 @@ export default function CreateChannelModal({ show, onCloseModal, setShowCreateCh
           revalidateChannel();
           setShowCreateChannelModal(false);
           setNewChannel('');
+          onCloseModal();
         })
         .catch((error) => {
           toast.error(error.response?.data, { position: 'bottom-center' });
         });
     },
-    [newChannel, revalidateChannel, setNewChannel, setShowCreateChannelModal, workspace],
+    [newChannel, revalidateChannel, setNewChannel, setShowCreateChannelModal, workspace, onCloseModal],
   );
 
   return (
