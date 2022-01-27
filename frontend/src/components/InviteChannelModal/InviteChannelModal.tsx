@@ -24,19 +24,26 @@ export default function InviteChannelModal({ show, onCloseModal, setShowInviteCh
       if (!newMember || !newMember.trim()) return;
 
       axios
-        .post(`/api/workspaces/${workspace}/channels/${channel}/members`, {
-          email: newMember,
-        })
+        .post(
+          `/api/workspaces/${workspace}/channels/${channel}/members`,
+          {
+            email: newMember,
+          },
+          {
+            withCredentials: true,
+          },
+        )
         .then(() => {
           revalidateMembers();
           setShowInviteChannelModal(false);
           setNewMember('');
+          onCloseModal();
         })
         .catch((error) => {
           toast.error(error.response?.data, { position: 'bottom-center' });
         });
     },
-    [newMember, workspace, channel, revalidateMembers, setShowInviteChannelModal, setNewMember],
+    [newMember, workspace, channel, revalidateMembers, setShowInviteChannelModal, setNewMember, onCloseModal],
   );
 
   return (

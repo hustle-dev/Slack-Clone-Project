@@ -96,7 +96,7 @@ export default function DirectMessage() {
         mutateChat((chatData) => {
           chatData?.[0].unshift(data);
           return chatData;
-        }, false).then(() => {
+        }).then(() => {
           if (scrollbarRef.current) {
             if (
               scrollbarRef.current.getScrollHeight() <
@@ -134,7 +134,7 @@ export default function DirectMessage() {
   // useEffect(() => {
   //   if (chatData?.length === 1) {
   //     setTimeout(() => {
-  //       scrollbarRef.current?.scrollToBottom();
+  //       scrollbarRef.current?.scrollToBottom();a
   //     }, 500);
   //   }
   // }, [chatData]);

@@ -120,6 +120,7 @@ export default function Workspace() {
     setShowCreateChannelModal(false);
     setShowInviteWorkspaceModal(false);
     setShowInviteChannelModal(false);
+    setShowWorkspaceModal(false);
   }, []);
 
   const toggleWorkspaceModal = useCallback(() => {
@@ -144,19 +145,19 @@ export default function Workspace() {
         <RightMenu>
           <span role="button" tabIndex={0} onClick={onClickUserProfile} onKeyDown={onClickUserProfile}>
             <ProfileImg src={gravatar.url(userData.email, { s: '28px', d: 'retro' })} alt={userData.nickname} />
-            {showUserMenu && (
-              <Menu style={{ right: 0, top: 38 }} show={showUserMenu} onCloseModal={onClickUserProfile}>
-                <ProfileModal>
-                  <img src={gravatar.url(userData.email, { s: '36px', d: 'retro' })} alt={userData.nickname} />
-                  <div>
-                    <span id="profile-name">{userData.nickname}</span>
-                    <span id="profile-active">Active</span>
-                  </div>
-                </ProfileModal>
-                <LogOutButton onClick={onLogout}>로그아웃</LogOutButton>
-              </Menu>
-            )}
           </span>
+          {showUserMenu && (
+            <Menu style={{ right: 0, top: 38 }} show={showUserMenu} onCloseModal={onClickUserProfile}>
+              <ProfileModal>
+                <img src={gravatar.url(userData.email, { s: '36px', d: 'retro' })} alt={userData.nickname} />
+                <div>
+                  <span id="profile-name">{userData.nickname}</span>
+                  <span id="profile-active">Active</span>
+                </div>
+              </ProfileModal>
+              <LogOutButton onClick={onLogout}>로그아웃</LogOutButton>
+            </Menu>
+          )}
         </RightMenu>
       </Header>
       <WorkspaceWrapper>

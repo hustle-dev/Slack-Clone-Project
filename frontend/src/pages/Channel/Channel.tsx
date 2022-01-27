@@ -24,6 +24,15 @@ export default function Channel() {
   } = useSWRInfinite<IChat[]>(
     (index) => `/api/workspaces/${workspace}/channels/${channel}/chats?perPage=20&page=${index + 1}`,
     fetcher,
+    {
+      onSuccess(data) {
+        if (data?.length === 1) {
+          setTimeout(() => {
+            scrollbarRef.current?.scrollToBottom();
+          }, 100);
+        }
+      },
+    },
   );
   const { data: channelMembersData } = useSWR<IUser[]>(
     myData ? `/api/workspaces/${workspace}/channels/${channel}/members` : null,
