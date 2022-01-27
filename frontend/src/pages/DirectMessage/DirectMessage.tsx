@@ -4,7 +4,6 @@ import useInput from 'hooks/useInput';
 import { useParams } from 'react-router-dom';
 import useSWR from 'swr';
 import useSWRInfinite from 'swr/infinite';
-// import useSWRInfinite from 'swr/infinite';
 import { IDM } from 'typings/db';
 import fetcher from 'utils/fetcher';
 import gravatar from 'gravatar';
@@ -82,6 +81,9 @@ export default function DirectMessage() {
             setChat('');
             scrollbarRef.current?.scrollToBottom();
           })
+          // .then(() => {
+          //   mutateChat();
+          // })
           .catch(console.error);
       }
     },
@@ -123,19 +125,17 @@ export default function DirectMessage() {
     return () => {
       socket?.off('dm', onMessage);
     };
-  });
+  }, [socket, onMessage]);
 
   useEffect(() => {
-    // if (chatData?.length === 1) {
-    //   console.log('lendsf');
-    //   scrollbarRef.current?.scrollToBottom();
-    // }
     localStorage.setItem(`${workspace}-${id}`, new Date().getTime().toString());
   }, [workspace, id]);
 
   // useEffect(() => {
   //   if (chatData?.length === 1) {
-  //     scrollbarRef.current?.scrollToBottom();
+  //     setTimeout(() => {
+  //       scrollbarRef.current?.scrollToBottom();
+  //     }, 500);
   //   }
   // }, [chatData]);
 
