@@ -21,9 +21,8 @@ export default function InviteChannelModal({ show, onCloseModal, setShowInviteCh
   const onInviteMember = useCallback(
     (e) => {
       e.preventDefault();
-      if (!newMember || !newMember.trim()) {
-        return;
-      }
+      if (!newMember || !newMember.trim()) return;
+
       axios
         .post(`/api/workspaces/${workspace}/channels/${channel}/members`, {
           email: newMember,
@@ -34,11 +33,10 @@ export default function InviteChannelModal({ show, onCloseModal, setShowInviteCh
           setNewMember('');
         })
         .catch((error) => {
-          console.dir(error);
           toast.error(error.response?.data, { position: 'bottom-center' });
         });
     },
-    [channel, newMember, revalidateMembers, setNewMember, setShowInviteChannelModal, workspace],
+    [newMember, workspace, channel, revalidateMembers, setShowInviteChannelModal, setNewMember],
   );
 
   return (

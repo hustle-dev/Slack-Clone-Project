@@ -25,9 +25,8 @@ export default function InviteWorkspaceModal({
   const onInviteMember = useCallback(
     (e) => {
       e.preventDefault();
-      if (!newMember || !newMember.trim()) {
-        return;
-      }
+      if (!newMember || !newMember.trim()) return;
+
       axios
         .post(`/api/workspaces/${workspace}/members`, {
           email: newMember,
@@ -38,7 +37,6 @@ export default function InviteWorkspaceModal({
           setNewMember('');
         })
         .catch((error) => {
-          console.dir(error);
           toast.error(error.response?.data, { position: 'bottom-center' });
         });
     },

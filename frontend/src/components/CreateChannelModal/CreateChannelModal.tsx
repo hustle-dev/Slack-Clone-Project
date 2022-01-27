@@ -22,31 +22,20 @@ export default function CreateChannelModal({ show, onCloseModal, setShowCreateCh
 
   const onCreateChannel = useCallback(
     (e) => {
+      if (!newChannel || !newChannel.trim()) return;
+
       e.preventDefault();
 
-      console.log(newChannel);
-
-      if (!newChannel || !newChannel.trim()) {
-        return;
-      }
-
       axios
-        .post(
-          `/api/workspaces/${workspace}/channels`,
-          {
-            name: newChannel,
-          },
-          {
-            withCredentials: true,
-          },
-        )
+        .post(`/api/workspaces/${workspace}/channels`, {
+          name: newChannel,
+        })
         .then(() => {
           revalidateChannel();
           setShowCreateChannelModal(false);
           setNewChannel('');
         })
         .catch((error) => {
-          console.dir(error);
           toast.error(error.response?.data, { position: 'bottom-center' });
         });
     },

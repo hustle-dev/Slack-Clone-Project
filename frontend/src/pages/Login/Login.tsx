@@ -29,7 +29,7 @@ function LogIn() {
     }
   };
 
-  if (data) {
+  if (!error && data) {
     return <Navigate replace to="/workspace/sleact/channel/일반" />;
   }
 

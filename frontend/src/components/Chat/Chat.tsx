@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, ReactElement, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import gravatar from 'gravatar';
 import dayjs from 'dayjs';
@@ -8,11 +8,12 @@ import { ChatProps } from './Chat.types';
 
 // develop일 때 아닐 때 구분 필요
 const BACK_URL = 'http://localhost:3095';
-function Chat({ data }: ChatProps) {
+
+function Chat({ data }: ChatProps): ReactElement {
   const { workspace } = useParams<{ workspace: string; channel: string }>();
   const user = 'Sender' in data ? data.Sender : data.User;
 
-  const result = useMemo(
+  const result = useMemo<(string | JSX.Element)[] | JSX.Element>(
     () =>
       data.content.startsWith('uploads\\') || data.content.startsWith('uploads/') ? (
         <img src={`${BACK_URL}/${data.content}`} style={{ maxHeight: 200 }} alt={data.content} />
