@@ -12,33 +12,38 @@ import { InviteChannelModalProps } from './InviteChannelModal.types';
 export default function InviteChannelModal({ show, onCloseModal, setShowInviteChannelModal }: InviteChannelModalProps) {
   const { workspace, channel } = useParams<{ workspace: string; channel: string }>();
   const [newMember, onChangeNewMember, setNewMember] = useInput('');
-  const { data: userData } = useSWR<IUser>('http://localhost:3095/api/users', fetcher);
+  const { data: userData } = useSWR<IUser>('/api/users', fetcher);
   const { mutate: revalidateMembers } = useSWR<IUser[]>(
-    userData ? `http://localhost:3095/api/workspaces/${workspace}/channels/${channel}/members` : null,
+    userData && channel ? `/api/workspaces/${workspace}/channels/${channel}/members` : null,
     fetcher,
   );
 
   const onInviteMember = useCallback(
     (e) => {
       e.preventDefault();
-      if (!newMember || !newMember.trim()) {
-        return;
-      }
+      if (!newMember || !newMember.trim()) return;
+
       axios
-        .post(`http://localhost:3095/api/workspaces/${workspace}/channels/${channel}/members`, {
-          email: newMember,
-        })
+        .post(
+          `/api/workspaces/${workspace}/channels/${channel}/members`,
+          {
+            email: newMember,
+          },
+          {
+            withCredentials: true,
+          },
+        )
         .then(() => {
           revalidateMembers();
           setShowInviteChannelModal(false);
           setNewMember('');
+          onCloseModal();
         })
         .catch((error) => {
-          console.dir(error);
           toast.error(error.response?.data, { position: 'bottom-center' });
         });
     },
-    [channel, newMember, revalidateMembers, setNewMember, setShowInviteChannelModal, workspace],
+    [newMember, workspace, channel, revalidateMembers, setShowInviteChannelModal, setNewMember, onCloseModal],
   );
 
   return (

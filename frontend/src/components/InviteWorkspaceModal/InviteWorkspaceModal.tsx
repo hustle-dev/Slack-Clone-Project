@@ -16,20 +16,19 @@ export default function InviteWorkspaceModal({
 }: InviteWorkspaceModalProps) {
   const { workspace } = useParams<{ workspace: string; channel: string }>();
   const [newMember, onChangeNewMember, setNewMember] = useInput('');
-  const { data: userData } = useSWR<IUser>('http://localhost:3095/api/users', fetcher);
+  const { data: userData } = useSWR<IUser>('/api/users', fetcher);
   const { mutate: revalidateMember } = useSWR<IUser[]>(
-    userData ? `http://localhost:3095/api/workspaces/${workspace}/members` : null,
+    userData ? `/api/workspaces/${workspace}/members` : null,
     fetcher,
   );
 
   const onInviteMember = useCallback(
     (e) => {
       e.preventDefault();
-      if (!newMember || !newMember.trim()) {
-        return;
-      }
+      if (!newMember || !newMember.trim()) return;
+
       axios
-        .post(`http://localhost:3095/api/workspaces/${workspace}/members`, {
+        .post(`/api/workspaces/${workspace}/members`, {
           email: newMember,
         })
         .then(() => {
@@ -38,7 +37,6 @@ export default function InviteWorkspaceModal({
           setNewMember('');
         })
         .catch((error) => {
-          console.dir(error);
           toast.error(error.response?.data, { position: 'bottom-center' });
         });
     },
