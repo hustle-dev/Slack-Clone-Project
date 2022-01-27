@@ -126,7 +126,7 @@ export default function Workspace() {
   }, []);
 
   const onClickInviteWorkspace = useCallback(() => {
-    setShowInviteChannelModal(true);
+    setShowInviteWorkspaceModal(true);
   }, []);
 
   if (!userData) {
