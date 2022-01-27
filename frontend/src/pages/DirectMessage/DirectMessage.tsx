@@ -27,13 +27,13 @@ export default function DirectMessage() {
     (index) => `/api/workspaces/${workspace}/dms/${id}/chats?perPage=20&page=${index + 1}`,
     fetcher,
     {
-      onSuccess(data) {
-        if (data?.length === 1) {
-          setTimeout(() => {
-            scrollbarRef.current?.scrollToBottom();
-          }, 100);
-        }
-      },
+      // onSuccess(data) {
+      //   if (data?.length === 1) {
+      //     setTimeout(() => {
+      //       scrollbarRef.current?.scrollToBottom();
+      //     }, 100);
+      //   }
+      // },
     },
   );
 
@@ -42,6 +42,7 @@ export default function DirectMessage() {
   const isEmpty = chatData?.[0]?.length === 0;
   const isReachingENd = isEmpty || (chatData && chatData[chatData.length - 1]?.length < 20) || false;
   const scrollbarRef = useRef<Scrollbars>(null);
+  const isEndScrollRef = useRef(false);
 
   const [dragOver, setDragOver] = useState(false);
   const dragTarget = useRef(null);
@@ -93,26 +94,47 @@ export default function DirectMessage() {
   const onMessage = useCallback(
     (data: IDM) => {
       if (data.SenderId === Number(id) && myData.id !== Number(id)) {
+        if (
+          scrollbarRef.current &&
+          scrollbarRef.current.getScrollHeight() ===
+            scrollbarRef.current.getClientHeight() + scrollbarRef.current.getScrollTop()
+        ) {
+          isEndScrollRef.current = true;
+        } else {
+          isEndScrollRef.current = false;
+        }
         mutateChat((chatData) => {
           chatData?.[0].unshift(data);
           return chatData;
         }).then(() => {
-          if (scrollbarRef.current) {
-            if (
-              scrollbarRef.current.getScrollHeight() <
-              scrollbarRef.current.getClientHeight() + scrollbarRef.current.getScrollTop() + 150
-            ) {
-              setTimeout(() => {
+          // if (scrollbarRef.current) {
+          //   if (
+          //     scrollbarRef.current.getScrollHeight() <
+          //     scrollbarRef.current.getClientHeight() + scrollbarRef.current.getScrollTop() + 150
+          //   ) {
+          //     setTimeout(() => {
+          //       scrollbarRef.current?.scrollToBottom();
+          //     }, 50);
+          //   } else {
+          // toast.success('새 메시지가 도착했습니다.', {
+          //   onClick() {
+          //     scrollbarRef.current?.scrollToBottom();
+          //   },
+          //   closeOnClick: true,
+          // });
+          //   }
+          // }
+          if (isEndScrollRef.current) {
+            setTimeout(() => {
+              scrollbarRef.current?.scrollToBottom();
+            }, 50);
+          } else {
+            toast.success('새 메시지가 도착했습니다.', {
+              onClick() {
                 scrollbarRef.current?.scrollToBottom();
-              }, 50);
-            } else {
-              toast.success('새 메시지가 도착했습니다.', {
-                onClick() {
-                  scrollbarRef.current?.scrollToBottom();
-                },
-                closeOnClick: true,
-              });
-            }
+              },
+              closeOnClick: true,
+            });
           }
         });
       }
@@ -131,13 +153,11 @@ export default function DirectMessage() {
     localStorage.setItem(`${workspace}-${id}`, new Date().getTime().toString());
   }, [workspace, id]);
 
-  // useEffect(() => {
-  //   if (chatData?.length === 1) {
-  //     setTimeout(() => {
-  //       scrollbarRef.current?.scrollToBottom();a
-  //     }, 500);
-  //   }
-  // }, [chatData]);
+  useEffect(() => {
+    setTimeout(() => {
+      scrollbarRef.current?.scrollToBottom();
+    }, 300);
+  }, []);
 
   const onDrop = useCallback(
     (e) => {
