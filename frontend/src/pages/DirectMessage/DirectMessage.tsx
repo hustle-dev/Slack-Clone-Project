@@ -96,7 +96,7 @@ export default function DirectMessage() {
         mutateChat((chatData) => {
           chatData?.[0].unshift(data);
           return chatData;
-        }, false).then(() => {
+        }).then(() => {
           if (scrollbarRef.current) {
             if (
               scrollbarRef.current.getScrollHeight() <

@@ -1,7 +1,8 @@
+import useSocket from 'hooks/useSocket';
 import React, { ReactElement, useEffect } from 'react';
 import { NavLink, useLocation, useParams } from 'react-router-dom';
 import useSWR from 'swr';
-import { IUser } from 'typings/db';
+import { IDM, IUser } from 'typings/db';
 import fetcher from 'utils/fetcher';
 import { EachDMProps } from './EachDM.types';
 
