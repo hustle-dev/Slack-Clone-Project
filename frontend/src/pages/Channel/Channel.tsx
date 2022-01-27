@@ -138,7 +138,7 @@ export default function Channel() {
     setTimeout(() => {
       scrollbarRef.current?.scrollToBottom();
     }, 300);
-  }, []);
+  }, [channel]);
 
   const onDrop = useCallback(
     (e) => {

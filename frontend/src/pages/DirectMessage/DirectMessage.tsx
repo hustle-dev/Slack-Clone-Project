@@ -140,7 +140,7 @@ export default function DirectMessage() {
     setTimeout(() => {
       scrollbarRef.current?.scrollToBottom();
     }, 300);
-  }, []);
+  }, [id]);
 
   const onDrop = useCallback(
     (e) => {
