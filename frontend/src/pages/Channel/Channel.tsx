@@ -5,6 +5,7 @@ import useSocket from 'hooks/useSocket';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import useSWR from 'swr';
 import useSWRInfinite from 'swr/infinite';
 import { IChannel, IChat, IUser } from 'typings/db';
@@ -14,7 +15,6 @@ import { Container, DragOver, Header } from './Channel.styles';
 
 export default function Channel() {
   const { workspace, channel } = useParams<{ workspace: string; channel: string }>();
-
   const { data: myData } = useSWR('/api/users', fetcher);
   const { data: channelData } = useSWR<IChannel>(`/api/workspaces/${workspace}/channels/${channel}`, fetcher);
   const {
@@ -31,19 +31,30 @@ export default function Channel() {
   );
 
   const [showInviteChannelModal, setShowInviteChannelModal] = useState(false);
-  const [dragOver, setDragOver] = useState(false);
+
   const [chat, onChangeChat, setChat] = useInput('');
   const [socket] = useSocket(workspace);
   const scrollbarRef = useRef<Scrollbars>(null);
   const dragTarget = useRef(null);
+
   const isEmpty = chatData?.[0]?.length === 0;
   const isReachingEnd = isEmpty || (chatData && chatData[chatData.length - 1]?.length < 20) || false;
+
+  const [dragOver, setDragOver] = useState(false);
+
+  const onClickInviteChannel = useCallback(() => {
+    setShowInviteChannelModal(true);
+  }, []);
+
+  const onCloseModal = useCallback(() => {
+    setShowInviteChannelModal(false);
+  }, []);
 
   const onSubmitForm = useCallback(
     (e) => {
       e.preventDefault();
 
-      if (chat?.trim() && chatData && channelData) {
+      if (chat?.trim() && chatData && channelData && myData) {
         const savedChat = chat;
         mutateChat((prevChatData) => {
           prevChatData?.[0].unshift({
@@ -57,16 +68,19 @@ export default function Channel() {
           });
           return prevChatData;
         }, false).then(() => {
+          localStorage.setItem(`${workspace}-${channel}`, new Date().getTime().toString());
           setChat('');
-          scrollbarRef.current?.scrollToBottom();
+          if (scrollbarRef.current) {
+            scrollbarRef.current.scrollToBottom();
+          }
         });
         axios
           .post(`/api/workspaces/${workspace}/channels/${channel}/chats`, {
-            content: chat,
+            content: savedChat,
           })
-          .then(() => {
-            mutateChat();
-          })
+          // .then(() => {
+          //   mutateChat();
+          // })
           .catch(console.error);
       }
     },
@@ -75,7 +89,10 @@ export default function Channel() {
 
   const onMessage = useCallback(
     (data: IChat) => {
-      if (data.Channel.name === channel && (data.content.startsWith('uploads\\') || data.UserId !== myData?.id)) {
+      if (
+        data.Channel.name === channel &&
+        (data.content.startsWith('uploads\\') || data.content.startsWith('uploads/') || data.UserId !== myData?.id)
+      ) {
         mutateChat((chatData) => {
           chatData?.[0].unshift(data);
           return chatData;
@@ -88,6 +105,13 @@ export default function Channel() {
               setTimeout(() => {
                 scrollbarRef.current?.scrollToBottom();
               }, 50);
+            } else {
+              toast.success('새 메시지가 도착했습니다.', {
+                onClick() {
+                  scrollbarRef.current?.scrollToBottom();
+                },
+                closeOnClick: true,
+              });
             }
           }
         });
@@ -104,20 +128,16 @@ export default function Channel() {
   }, [socket, onMessage]);
 
   useEffect(() => {
-    if (chatData?.length === 1) {
-      setTimeout(() => {
-        scrollbarRef.current?.scrollToBottom();
-      }, 500);
-    }
-  }, [chatData]);
+    localStorage.setItem(`${workspace}-${channel}`, new Date().getTime().toString());
+  }, [workspace, channel]);
 
-  const onClickInviteChannel = useCallback(() => {
-    setShowInviteChannelModal(true);
-  }, []);
-
-  const onCloseModal = useCallback(() => {
-    setShowInviteChannelModal(false);
-  }, []);
+  // useEffect(() => {
+  //   if (chatData?.length === 1) {
+  //     setTimeout(() => {
+  //       scrollbarRef.current?.scrollToBottom();
+  //     }, 500);
+  //   }
+  // }, [chatData]);
 
   const onDrop = useCallback(
     (e) => {
@@ -184,8 +204,19 @@ export default function Channel() {
           </button>
         </div>
       </Header>
-      <ChatList chatSections={chatSections} ref={scrollbarRef} setSize={setSize} isReachingEnd={isReachingEnd} />
-      <ChatBox chat={chat} onChangeChat={onChangeChat} onSubmitForm={onSubmitForm} />
+      <ChatList
+        chatSections={chatSections}
+        ref={scrollbarRef}
+        setSize={setSize}
+        isEmpty={isEmpty}
+        isReachingEnd={isReachingEnd}
+      />
+      <ChatBox
+        chat={chat}
+        onChangeChat={onChangeChat}
+        placeholder={`Message #${channel}`}
+        onSubmitForm={onSubmitForm}
+      />
       <InviteChannelModal
         show={showInviteChannelModal}
         onCloseModal={onCloseModal}

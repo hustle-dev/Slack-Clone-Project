@@ -16,7 +16,7 @@ import {
 } from 'components';
 import { IChannel, IUser, IWorkspace } from 'typings/db';
 import useInput from 'hooks/useInput';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import ChannelList from 'components/ChannelList/ChannelList';
 import useSocket from 'hooks/useSocket';
 import {
@@ -37,6 +37,18 @@ import {
 } from './Workspace.styles';
 
 export default function Workspace() {
+  // const { data: userData, mutate: revalidateUser } = useSWR<IUser | false>('/api/users', fetcher, {
+  //   dedupingInterval: 2000,
+  // });
+  const { data: userData, mutate: revalidateUser } = useSWR<IUser | false>('/api/users', fetcher);
+
+  const { workspace } = useParams<{ workspace: string }>();
+  const { data: channelData } = useSWR<IChannel[]>(userData ? `/api/workspaces/${workspace}/channels` : null, fetcher);
+  // const { data: memberData } = useSWR<IUser[]>(
+  //   userData ? `/api/workspaces/${workspace}/members` : null,
+  //   fetcher,
+  // );
+
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showCreateWorkspaceModal, setShowCreateWorkspaceModal] = useState(false);
   const [showCreateChannelModal, setShowCreateChannelModal] = useState(false);
@@ -46,13 +58,6 @@ export default function Workspace() {
 
   const [newWorkspace, onChangeNewWorkspace, setNewWorkspace] = useInput('');
   const [newUrl, onChangeNewUrl, setNewUrl] = useInput('');
-
-  const { data: userData, mutate: revalidateUser } = useSWR<IUser | false>('/api/users', fetcher, {
-    dedupingInterval: 2000,
-  });
-
-  const { workspace } = useParams<{ workspace: string }>();
-  const { data: channelData } = useSWR<IChannel[]>(userData ? `/api/workspaces/${workspace}/channels` : null, fetcher);
 
   const [socket, disconnect] = useSocket(workspace);
 
@@ -74,14 +79,6 @@ export default function Workspace() {
     });
   }, []);
 
-  const onClickUserProfile = useCallback(() => {
-    setShowUserMenu((prev) => !prev);
-  }, []);
-
-  const onClickCreateWorkspace = useCallback(() => {
-    setShowCreateWorkspaceModal(true);
-  }, []);
-
   const onCreateWorkspace = useCallback(
     (e) => {
       e.preventDefault();
@@ -95,7 +92,7 @@ export default function Workspace() {
             workspace: newWorkspace,
             url: newUrl,
           },
-          { withCredentials: true },
+          // { withCredentials: true },
         )
         .then(() => {
           revalidateUser();
@@ -104,12 +101,19 @@ export default function Workspace() {
           setNewUrl('');
         })
         .catch((error) => {
-          console.dir(error);
           toast.error(error.response?.data, { position: 'bottom-center' });
         });
     },
-    [newWorkspace, newUrl],
+    [newWorkspace, newUrl, revalidateUser, setNewWorkspace, setNewUrl],
   );
+
+  const onClickUserProfile = useCallback(() => {
+    setShowUserMenu((prev) => !prev);
+  }, []);
+
+  const onClickCreateWorkspace = useCallback(() => {
+    setShowCreateWorkspaceModal(true);
+  }, []);
 
   const onCloseModal = useCallback(() => {
     setShowCreateWorkspaceModal(false);
@@ -159,7 +163,7 @@ export default function Workspace() {
         <Workspaces>
           {userData?.Workspaces.map((ws: IWorkspace) => {
             return (
-              <Link key={ws.id} to={`/workspace/${123}/channel/일반`}>
+              <Link key={ws.id} to={`/workspace/${ws.url}/channel/일반`}>
                 <WorkspaceButton>{ws.name.slice(0, 1).toUpperCase()}</WorkspaceButton>
               </Link>
             );
@@ -167,11 +171,13 @@ export default function Workspace() {
           <AddButton onClick={onClickCreateWorkspace}>+</AddButton>
         </Workspaces>
         <Channels>
-          <WorkspaceName onClick={toggleWorkspaceModal}>Slack</WorkspaceName>
+          <WorkspaceName onClick={toggleWorkspaceModal}>
+            {userData?.Workspaces.find((v) => v.url === workspace)?.name}
+          </WorkspaceName>
           <MenuScroll>
             <Menu show={showWorkspaceModal} onCloseModal={toggleWorkspaceModal} style={{ top: 95, left: 80 }}>
               <WorkspaceModal>
-                <h2>Slack</h2>
+                <h2>{userData?.Workspaces.find((v) => v.url === workspace)?.name}</h2>
                 <button type="button" onClick={onClickInviteWorkspace}>
                   워크스페이스에 사용자 초대
                 </button>

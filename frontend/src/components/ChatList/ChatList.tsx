@@ -5,10 +5,10 @@ import { ChatZone, Section, StickyHeader } from './ChatList.styles';
 import { ChatListProps } from './ChatList.types';
 
 const ChatList = forwardRef<Scrollbars, ChatListProps>(
-  ({ chatSections, setSize, isReachingEnd }: ChatListProps, scrollbarRef) => {
+  ({ chatSections, setSize, isEmpty, isReachingEnd }: ChatListProps, scrollbarRef) => {
     const onScroll = useCallback(
       (values) => {
-        if (values.scrollTop === 0 && !isReachingEnd) {
+        if (values.scrollTop === 0 && !isEmpty && !isReachingEnd) {
           setSize((prevSize) => prevSize + 1).then(() => {
             const current = (scrollbarRef as MutableRefObject<Scrollbars>)?.current;
             if (current) {
@@ -17,7 +17,7 @@ const ChatList = forwardRef<Scrollbars, ChatListProps>(
           });
         }
       },
-      [scrollbarRef, isReachingEnd, setSize],
+      [scrollbarRef, isReachingEnd, setSize, isEmpty],
     );
 
     return (

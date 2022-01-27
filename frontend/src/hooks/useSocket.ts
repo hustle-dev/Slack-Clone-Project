@@ -1,12 +1,12 @@
-import { useCallback } from 'react';
 import io from 'socket.io-client';
+import { useCallback } from 'react';
 
 const backUrl = 'http://localhost:3095';
 
 const sockets: { [key: string]: SocketIOClient.Socket } = {};
 const useSocket = (workspace?: string): [SocketIOClient.Socket | undefined, () => void] => {
   const disconnect = useCallback(() => {
-    if (workspace) {
+    if (workspace && sockets[workspace]) {
       sockets[workspace].disconnect();
       delete sockets[workspace];
     }

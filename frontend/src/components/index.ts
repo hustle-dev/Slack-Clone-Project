@@ -9,3 +9,5 @@ export { default as CollapseButton } from './CollapseButton/CollapseButton';
 export { default as DMList } from './DMList/DMList';
 export { default as ChatList } from './ChatList/ChatList';
 export { default as ChatBox } from './ChatBox/ChatBox';
+export { default as EachDM } from './EachDM/EachDM';
+export { default as EachChannel } from './EachChannel/EachChannel';
