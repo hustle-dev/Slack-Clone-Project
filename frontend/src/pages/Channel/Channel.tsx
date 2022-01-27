@@ -138,7 +138,7 @@ export default function Channel() {
     setTimeout(() => {
       scrollbarRef.current?.scrollToBottom();
     }, 300);
-  }, [channel]);
+  }, [channel, workspace]);
 
   const onDrop = useCallback(
     (e) => {
@@ -160,7 +160,9 @@ export default function Channel() {
         setDragOver(false);
         localStorage.setItem(`${workspace}-${channel}`, new Date().getTime().toString());
         mutateChat();
-        scrollbarRef.current?.scrollToBottom();
+        setTimeout(() => {
+          scrollbarRef.current?.scrollToBottom();
+        }, 300);
       });
     },
     [workspace, channel, mutateChat],
