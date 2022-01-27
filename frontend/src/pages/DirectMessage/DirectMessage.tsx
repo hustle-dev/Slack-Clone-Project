@@ -162,7 +162,9 @@ export default function DirectMessage() {
         setDragOver(false);
         localStorage.setItem(`${workspace}-${id}`, new Date().getTime().toString());
         mutateChat();
-        scrollbarRef.current?.scrollToBottom();
+        setTimeout(() => {
+          scrollbarRef.current?.scrollToBottom();
+        }, 300);
       });
     },
     [workspace, id, mutateChat],
