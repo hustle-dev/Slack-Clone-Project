@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { CreateMenu, CloseModalButton } from './Menu.styles';
 import { MenuProps } from './Menu.types';
 
-export default function Menu({ children, style, show, onCloseModal, closeButton }: MenuProps) {
+export default function Menu({ style, show, onCloseModal, closeButton, children }: MenuProps) {
   const stopPropagation = useCallback((e) => {
     e.stopPropagation();
   }, []);

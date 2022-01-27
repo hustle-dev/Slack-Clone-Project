@@ -1,9 +1,9 @@
 import { CSSProperties, ReactNode } from 'react';
 
 export interface MenuProps {
-  children: ReactNode;
+  style: CSSProperties;
   show: boolean;
   onCloseModal: (e: any) => void;
-  style: CSSProperties;
   closeButton?: boolean;
+  children: ReactNode;
 }

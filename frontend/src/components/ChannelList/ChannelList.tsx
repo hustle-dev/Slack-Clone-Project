@@ -1,18 +1,18 @@
-import { CollapseButton } from 'components';
-import React, { useCallback, useState } from 'react';
-import { NavLink, useParams } from 'react-router-dom';
+import { CollapseButton, EachChannel } from 'components';
+import React, { ReactElement, useCallback, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import useSWR from 'swr';
 import { IChannel, IUser } from 'typings/db';
 import fetcher from 'utils/fetcher';
 
-export default function ChannelList() {
+export default function ChannelList(): ReactElement {
   const { workspace } = useParams<{ workspace?: string; channel?: string }>();
   const { data: userData } = useSWR<IUser>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
   const { data: channelData } = useSWR<IChannel[]>(userData ? `/api/workspaces/${workspace}/channels` : null, fetcher);
-  const [channelCollapse, setChannelCollapse] = useState(false);
 
+  const [channelCollapse, setChannelCollapse] = useState(false);
   const toggleChannelCollapse = useCallback(() => {
     setChannelCollapse((prev) => !prev);
   }, []);
@@ -32,15 +32,7 @@ export default function ChannelList() {
       <div>
         {!channelCollapse &&
           channelData?.map((channel) => {
-            return (
-              <NavLink
-                key={channel.name}
-                className={({ isActive }) => (isActive ? 'selected' : '')}
-                to={`/workspace/${workspace}/channel/${channel.name}`}
-              >
-                <span># {channel.name}</span>
-              </NavLink>
-            );
+            return <EachChannel key={channel.id} channel={channel} />;
           })}
       </div>
     </>
