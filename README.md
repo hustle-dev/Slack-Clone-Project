@@ -4,7 +4,9 @@
 
 리액트 + 타입스크립트로 구현한 Slack 클론 프로젝트입니다.
 
-## 프로젝트 목표
+<br>
+
+## 🎯 프로젝트 목표
 
 1. React를 사용하면서 불필요한 렌더링 방지 및 각종 api를 사용해보기
   - useCallback
@@ -16,17 +18,25 @@
 
 3. 채팅을 구현하면서 사용자 입장에서의 스크롤 UI 구현 시 고민하고, 어려운 부분 경험해보기
 
+<br>
+
 ## 🛠 기술 스택
 
   <img src="https://img.shields.io/badge/React-20232a?style=for-the-badge&logo=React&logoColor=#5bccea"/><img src="https://img.shields.io/badge/Typescript-3178C6?style=for-the-badge&logo=Typescript&logoColor=white"/><img src="https://img.shields.io/badge/Socket.IO-18191A?style=for-the-badge&logo=Socket.io&logoColor=white"/><img src="https://img.shields.io/badge/Emotion-D36AC2?style=for-the-badge&logoColor=f776AB"/><img src="https://img.shields.io/badge/SWR-121212?style=for-the-badge&logo=Emotion&logoColor=white"/>
+
+<br>
 
 ## 🗓 기간
 
 2022/01/19 ~ 2022/01/28 (약 1주일)
 
-## 프로젝트 Wiki
+<br>
+
+## 📝 프로젝트 Wiki
 
 https://github.com/URSound/Slack-Clone-Project/wiki
+
+<br>
 
 ## 👋🏻 팀 소개
 
@@ -35,6 +45,7 @@ https://github.com/URSound/Slack-Clone-Project/wiki
 | <img src="https://avatars.githubusercontent.com/hustle-dev" width="70%"> | <img src="https://avatars.githubusercontent.com/coolchaeyoung" width="70%"> |
 |               [hustle-dev](https://github.com/hustle-dev)                |              [coolchaeyoung](https://github.com/coolchaeyoung)              |
 
+<br>
 
 ## 🚀 실행 방법
 
